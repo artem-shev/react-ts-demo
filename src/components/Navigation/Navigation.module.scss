@@ -1,0 +1,11 @@
+.navItem {
+  padding: 10px;
+
+  .link {
+    color: #fff;
+  }
+  .active {
+    font-weight: bold;
+    text-decoration: underline;
+  }
+}
