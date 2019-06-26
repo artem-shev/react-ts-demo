@@ -13,15 +13,16 @@ interface Props {
 
 const BooksList = ({ books, onDelete }: Props) => {
   return (
-    <Grid container direction="row">
+    <Grid container direction="row" data-test="wrapper">
       {books.map(({ id, title, description }) => (
-        <Card key={id} className={styles.card}>
+        <Card key={id} className={styles.card} data-test="book_item">
           <CardContent>
             <Clear
               onClick={() => {
                 onDelete(id);
               }}
               className={styles.delete}
+              data-test={`delete_${id}`}
             />
             <Typography>title: {title}</Typography>
             <Typography>description: {description}</Typography>

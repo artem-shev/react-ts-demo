@@ -80,8 +80,8 @@ const mapDispatchToProps = {
   deleteUser: users.actions.delete,
 };
 
-// @ts-ignore
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
+  // @ts-ignore
 )(Users);

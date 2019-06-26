@@ -9,7 +9,7 @@ import BooksList from './BooksList';
 
 const bookSchema = { title: '', description: '' };
 
-const Books = ({ saveBook, fetchBooks, deleteBook, books }: any) => {
+export const Books = ({ saveBook, fetchBooks, deleteBook, books }: any) => {
   useEffect(() => {
     fetchBooks();
   }, [fetchBooks]);
@@ -28,7 +28,7 @@ const Books = ({ saveBook, fetchBooks, deleteBook, books }: any) => {
   return (
     <Grid container direction="column">
       <Grid item>
-        <Button color="primary" variant="contained" onClick={handleOpen}>
+        <Button color="primary" variant="contained" onClick={handleOpen} data-test="add_book">
           add book
         </Button>
       </Grid>

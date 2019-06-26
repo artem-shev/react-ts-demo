@@ -33,59 +33,53 @@ interface Props {
   initialValues: User;
 }
 
-const UserForm = ({ handleClose, initialValues, onSubmit, books }: Props) => {
-  return (
-    <Formik onSubmit={onSubmit} initialValues={initialValues} validationSchema={validationSchema}>
-      {({ handleSubmit }) => {
-        return (
-          <DialogBoilerplate handleClose={handleClose} title="User Form" onConfirm={handleSubmit}>
-            <Grid container>
-              {Object.values(inputFieldNames).map(
-                fieldName =>
-                  fieldName && (
-                    <Grid item xs={6} key={fieldName}>
-                      <CustomField name={fieldName} />
-                    </Grid>
-                  ),
-              )}
-              <FieldArray name={fieldNames.books}>
-                {props => {
-                  const { push, remove, form } = props;
-                  console.log('form', form);
-                  return (
-                    <Grid item xs={12}>
-                      {books.map(book => {
-                        // @ts-ignore
-                        const { id, title } = book || {};
-                        const selectedBooks = form.values[fieldNames.books];
-                        const index = selectedBooks.findIndex(
-                          (selectedBook: any) => selectedBook.id === id,
-                        );
-                        const checked = index !== -1;
+const UserForm = ({ handleClose, initialValues, onSubmit, books }: Props) => (
+  <Formik onSubmit={onSubmit} initialValues={initialValues} validationSchema={validationSchema}>
+    {({ handleSubmit }) => {
+      return (
+        <DialogBoilerplate handleClose={handleClose} title="User Form" onConfirm={handleSubmit}>
+          <Grid container>
+            {Object.values(inputFieldNames).map(
+              fieldName =>
+                fieldName && (
+                  <Grid item xs={6} key={fieldName}>
+                    <CustomField name={fieldName} />
+                  </Grid>
+                ),
+            )}
+            <FieldArray name={fieldNames.books}>
+              {({ push, remove, form }) => (
+                <Grid item xs={12}>
+                  {books.map(book => {
+                    // @ts-ignore
+                    const { id, title } = book || {};
+                    const selectedBooks = form.values[fieldNames.books];
+                    const index = selectedBooks.findIndex(
+                      (selectedBook: any) => selectedBook.id === id,
+                    );
+                    const checked = index !== -1;
 
-                        return (
-                          <FormControlLabel
-                            key={id}
-                            control={
-                              <Checkbox
-                                checked={checked}
-                                onChange={() => (checked ? remove(index) : push(book))}
-                              />
-                            }
-                            label={title}
+                    return (
+                      <FormControlLabel
+                        key={id}
+                        control={
+                          <Checkbox
+                            checked={checked}
+                            onChange={() => (checked ? remove(index) : push(book))}
                           />
-                        );
-                      })}
-                    </Grid>
-                  );
-                }}
-              </FieldArray>
-            </Grid>
-          </DialogBoilerplate>
-        );
-      }}
-    </Formik>
-  );
-};
+                        }
+                        label={title}
+                      />
+                    );
+                  })}
+                </Grid>
+              )}
+            </FieldArray>
+          </Grid>
+        </DialogBoilerplate>
+      );
+    }}
+  </Formik>
+);
 
 export default UserForm;
