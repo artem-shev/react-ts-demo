@@ -42,10 +42,15 @@ const DialogBoilerplate = ({
         {children}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary">
+        <Button onClick={handleClose} color="primary" data-test="dialog_cancel_btn">
           {cancelLabel}
         </Button>
-        <Button onClick={onConfirm} color="primary" variant="contained">
+        <Button
+          onClick={onConfirm}
+          color="primary"
+          variant="contained"
+          data-test="dialog_confirm_btn"
+        >
           {confirmLabel}
         </Button>
       </DialogActions>
