@@ -1,0 +1,108 @@
+import { normalize, schema } from 'normalizr';
+import  {v4} from 'uuid';
+import {Dispatch} from 'redux';
+
+import * as types from './types';
+import firebase from '../../../firebase';
+
+interface EntityActionCreatorConfig {
+  entityKey: string,
+  schema?: schema.Entity,
+}
+
+// TODO extract firebase.firestore().collection to config param
+export const makeFetchEntityAction = ({ entityKey, schema }: EntityActionCreatorConfig) => {
+  if (!schema) throw Error('schema is required');
+
+  const meta = {entityKey};
+
+  return () => async (dispatch: Dispatch) => {
+    dispatch({ type: types.START_ENTITIES_FETCHING, meta });
+
+    try {
+      dispatch({ type: types.FETCH_ENTITIES, meta });
+
+      const response = await firebase.firestore().collection(entityKey).get();
+      const data = response.docs.map(snapshot => snapshot.data()).filter(({id}) => Boolean(id));
+      const {entities, result} = normalize(data, [schema]);
+
+      dispatch({
+        type: types.FETCH_ENTITIES_SUCCESS,
+        payload: entities,
+        meta: {...meta, result},
+      });
+    } catch (error) {
+      dispatch({
+        error,
+        meta,
+        type: types.FETCH_ENTITIES_FAILED,
+      })
+    } finally {
+      dispatch({ type: types.STOP_ENTITIES_FETCHING, meta });
+    }
+  };
+};
+
+// TODO extract firebase.firestore().collection to config param
+export const makeSaveEntityAction = ({ entityKey, schema }: EntityActionCreatorConfig) => {
+  if (!schema) throw Error('schema is required');
+
+  const meta = {entityKey};
+
+  return (values: any) =>
+    async (dispatch: Dispatch) => {
+      dispatch({ type: types.START_ENTITIES_FETCHING, meta });
+
+      try {
+        dispatch({ type: types.SAVE_ENTITY, meta });
+
+        const entity = {...values, id: values.id || v4()};
+
+        await firebase.firestore().collection(entityKey).doc(entity.id).set(entity).then(() => entity);
+
+        const { entities, result } = normalize(entity, schema);
+
+        dispatch({
+          type: types.SAVE_ENTITY_SUCCESS,
+          payload: entities,
+          meta: { ...meta, result },
+        });
+      } catch (error) {
+        dispatch({
+          error,
+          meta,
+          type: types.SAVE_ENTITY_FAILED,
+        })
+      } finally {
+        dispatch({ type: types.STOP_ENTITIES_FETCHING, meta });
+      }
+    }
+  };
+
+export const makeDeleteEntityAction = ({ entityKey }: EntityActionCreatorConfig) => {
+  const meta = {entityKey};
+
+  return (id: string) => async (dispatch: Dispatch) => {
+    dispatch({ type: types.START_ENTITIES_FETCHING, meta });
+
+    try {
+      dispatch({ type: types.DELETE_ENTITY, meta });
+
+      await firebase.firestore().collection(entityKey).doc(id).delete();
+
+      dispatch({
+        type: types.DELETE_ENTITY_SUCCESS,
+        payload: id,
+        meta: { ...meta },
+      });
+    } catch (error) {
+      dispatch({
+        error,
+        meta,
+        type: types.DELETE_ENTITY_FAILED,
+      })
+    } finally {
+      dispatch({ type: types.STOP_ENTITIES_FETCHING, meta });
+    }
+  };
+};
