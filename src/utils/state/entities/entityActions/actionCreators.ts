@@ -72,11 +72,9 @@ export const makeFetchEntityAction = ({
             .filter(({ id }: any) => Boolean(id)),
         ),
     transformResponse: (response: any) => {
-      console.log('response', response);
       // @ts-ignore
       const { entities, result } = normalize(response, [schema]);
-      // @ts-ignore
-      console.log('normalize(response, [schema])', normalize(response, [schema]));
+
       return {
         processedPayload: entities,
         processedMeta: { entityKey, result },
