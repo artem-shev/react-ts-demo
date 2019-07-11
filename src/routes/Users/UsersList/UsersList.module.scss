@@ -1,0 +1,22 @@
+.bookCard {
+  margin: 10px;
+  padding: 10px;
+}
+.usersList {
+  padding: 10px 0;
+}
+
+.userTitle {
+  position: relative;
+}
+.delete {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.edit {
+  position: absolute;
+  top: 0;
+  right: 50px;
+}

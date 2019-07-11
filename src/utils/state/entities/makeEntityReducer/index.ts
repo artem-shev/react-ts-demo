@@ -25,7 +25,6 @@ export default ({
   initialState?: Object;
 }) =>
   function entityReducer(state = initialState, { type, payload, meta }: AnyAction) {
-    console.log('payload', payload);
     if (!has(payload, entityKey)) return state;
 
     switch (type) {
